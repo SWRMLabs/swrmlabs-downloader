@@ -15,26 +15,20 @@ import (
 // Command arguments
 var (
 	bin = flag.String("bin", "ss-light-linux-amd64", "Location of lite-client")
-	// Provide hash/    sharable string
-	sharable = flag.String("sharable", "", "Sharable string provided for file")
+	sharable    = flag.String("sharable", "", "Sharable string provided for file")
 )
 
-/**
- * Driver function -
- * @method main
- * @params {null}
- */
 func main() {
 
 	// Parse command arguments
 	flag.Parse()
 	if len(*sharable) == 0 {
 		fmt.Println(`
-    Usage:
-        ./client <OPTIONS>
+Usage:
+	./client <OPTIONS>
 
-    Options:
-            `)
+Options:
+		`)
 		flag.PrintDefaults()
 		log.Fatal("Sharable string not provided")
 	}
@@ -58,17 +52,17 @@ func main() {
 	go func() {
 		defer waitGroup.Done()
 		for {
-			str, _, err := rd.ReadLine()
+			str, _ ,err := rd.ReadLine()
 			if err != nil {
 				log.Println("Read Error:", err)
 			}
 			sar := strings.Split(string(str), " ")
 			fmt.Println("Progress :", sar[len(sar)-1])
 			select {
-			case <-time.After(time.Millisecond * 500):
-			case <-done:
-				close(done)
-				return
+				case <- time.After(time.Millisecond * 500):
+				case <- done:
+					close(done)
+					return
 			}
 		}
 	}()
