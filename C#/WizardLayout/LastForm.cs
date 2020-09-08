@@ -8,12 +8,13 @@ using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Net;
-
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 namespace WizardLayout
 {
     public partial class LastForm : Form
     {
-        
+        StringBuilder strbld = new StringBuilder();
         public LastForm()
         {
             InitializeComponent();
@@ -91,8 +92,8 @@ namespace WizardLayout
                 string hash = richTextBox1.Text.Trim();//reading the file has from Textbox
                 processCaller = new ProcessCaller(this);//Creating a ProcessCaller to execute command
                 string downlaodPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);//File path Variable
-                processCaller.FileName = @"PathToDownloader";//Give your file downloader binary path.
-                processCaller.Arguments = $@" -sharable {hash} -dst {downlaodPath} -progress";
+                processCaller.FileName = @"..\..\qa.exe";//Give your file downloader binary path.
+                processCaller.Arguments = $@" -sharable {hash} -progress -json";
                 processCaller.StdErrReceived += new DataReceivedHandler(writeStreamInfo); //Stdout error receiver
                 processCaller.StdOutReceived += new DataReceivedHandler(writeStreamInfo);// Stdout Data Receiver
                 processCaller.Completed += new EventHandler(processCompleted);//process complete handeler
@@ -116,17 +117,39 @@ namespace WizardLayout
         /// </remarks>
         private void writeStreamInfo(object sender, DataReceivedEventArgs e)
         {
-            string tempVal = e.Text;
-            tempVal = tempVal.Remove(tempVal.Length - 1);
-            tempVal = tempVal.Substring(9).Trim();
-            if (Int32.TryParse(tempVal, out int numValue))
-                progressBar1.Value = numValue;
-            this.richTextBox2.AppendText(e.Text + Environment.NewLine);
+           
+            strbld.Append(e.Text.Trim());
+            //valiadting string builder for Json.
+            if (validateJson(strbld.ToString())){
+                //Convert string builder to JSON object
+                dynamic json = JObject.Parse(strbld.ToString());
+                this.richTextBox2.AppendText(json+ Environment.NewLine);
+                if (json.ContainsKey("data"))
+                {
+                    //Showing percentage in progress bar
+                    this.progressBar1.Value = json.data.percentage;
+                    //Showing Doenloaded and total size.
+                    this.download.Text = json.data.downloaded + " / " + json.data.total_size;
+                }
+                strbld = new StringBuilder();
+            }
         }
         private void button2_Click(object sender, EventArgs e)
         {
             string downlaodPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             Process.Start("explorer.exe", $@"{downlaodPath}");
+        }
+        private bool validateJson(String str)
+        {
+            try
+            {
+                JToken token = JObject.Parse(str);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

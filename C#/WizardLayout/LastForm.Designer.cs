@@ -35,11 +35,13 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.button1 = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.download = new System.Windows.Forms.Label();
             this.pnlContent.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlContent
             // 
+            this.pnlContent.Controls.Add(this.download);
             this.pnlContent.Controls.Add(this.button2);
             this.pnlContent.Controls.Add(this.richTextBox2);
             this.pnlContent.Controls.Add(this.progressBar1);
@@ -67,7 +69,7 @@
             // 
             this.richTextBox2.Location = new System.Drawing.Point(160, 266);
             this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(676, 75);
+            this.richTextBox2.Size = new System.Drawing.Size(677, 123);
             this.richTextBox2.TabIndex = 8;
             this.richTextBox2.Text = "";
             // 
@@ -75,12 +77,12 @@
             // 
             this.progressBar1.Location = new System.Drawing.Point(164, 189);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(673, 45);
+            this.progressBar1.Size = new System.Drawing.Size(545, 45);
             this.progressBar1.TabIndex = 7;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(737, 109);
+            this.button1.Location = new System.Drawing.Point(737, 74);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(100, 51);
             this.button1.TabIndex = 6;
@@ -90,11 +92,19 @@
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(164, 109);
+            this.richTextBox1.Location = new System.Drawing.Point(164, 74);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.Size = new System.Drawing.Size(464, 51);
             this.richTextBox1.TabIndex = 5;
             this.richTextBox1.Text = "";
+            // 
+            // download
+            // 
+            this.download.AutoSize = true;
+            this.download.Location = new System.Drawing.Point(747, 213);
+            this.download.Name = "download";
+            this.download.Size = new System.Drawing.Size(0, 21);
+            this.download.TabIndex = 10;
             // 
             // LastForm
             // 
@@ -106,6 +116,7 @@
             this.Name = "LastForm";
             this.Text = "Hive";
             this.pnlContent.ResumeLayout(false);
+            this.pnlContent.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -118,5 +129,6 @@
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Label download;
     }
 }
