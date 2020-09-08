@@ -1,56 +1,71 @@
 package light_client;
 import java.io.*;
 import java.util.*;
+import org.json.*;
+
 
 
 public class index {
 	
 	public static BufferedReader inp;
-    public static BufferedWriter out;
-    
-    // Parsing the Buffer and printing To console.
-    public static void print(String s) {
-    	s = s.substring(0,s.length()-1);
-		s= s.substring(10);
-    	System.out.println(s);
+	public static StringBuilder strbld = new StringBuilder();
+    //To get this output
+    public static void print(String responseStr) {
+    	String[] strArray = responseStr.split(" ");
+    	if(strArray[0].equals("Progress")) {
+    		System.out.println("persentage : "+strArray[1].substring(0,strArray[1].length()-1));
+    		System.out.println("downloaded : "+strArray[2].substring(1));
+    		System.out.println("total_size : "+strArray[4].substring(0,strArray[4].length()-2));
+    	}
+    	else {
+    		System.out.println(responseStr);
+    	}
     }
-    //This function to read the out Buffer and return the result.
-    public static String pipe(String msg) {
-    	String ret;
-    	try {
-			out.write(msg + '\n');
-			out.flush();
-			ret = inp.readLine();
-			return ret;
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
+    //valiadate Json
+    private static boolean isJSONValid(String str) {
+        try {
+            new JSONObject(str);
+        } catch (JSONException ex) {
+            try {
+                new JSONArray(str);
+            } catch (JSONException ex1) {
+                return false;
+            }
+        }
+        return true;
+    }
+    //To return Json OutPut
+    private static void printJson(String stream) {
+    	//creating JSON and printing.
+		strbld.append(stream.trim());
+		if(isJSONValid(strbld.toString())) {
+			print(strbld.toString());
+			strbld = new StringBuilder();
 		}
-    	return "";
     }
-	public static void main(String[] args) {
+   	public static void main(String[] args) {
 		try
 		{
 			String stream;
-			String path = "PathTolightClient"; //Give your file downloader binary path.
-			String fileHash = "fzhnMWQ5feB842R6pQa2kTPzMo"; // Give your file hash. How to get file hash Vist:-https://developer.swrmlabs.io/#/?id=how-to-download-a-file-using-a-downloader
-			String command = path+" -sharable "+fileHash+" -progress";
+			String path = "C:\\Users\\asuto\\eclipse-workspace\\ss-light-client-Java\\src\\light_client\\qa.exe"; //Give your file downloader binary path.
+			String fileHash = "fzhnK3WkHNjxNfMgAtSeszKTGo"; // Give you file hash How to get file hash Vist:-https://developer.swrmlabs.io/#/?id=how-to-download-a-file-using-a-downloader
+			String command = path+" -sharable "+fileHash+" -progress -json";
 			Runtime run = Runtime.getRuntime();
 			Process proc = run.exec(command);//executing the command
-			
 			inp = new BufferedReader( new InputStreamReader(proc.getInputStream()));//Creating Buffer Reader to get the exec input.
-			out = new BufferedWriter( new OutputStreamWriter(proc.getOutputStream()));//Creating Buffer Writer to write the stdout.
-			
 			//Reading the input Buffer and printing till Buffer Empty.
+			
 			while((stream = inp.readLine()) != null){
-				print(pipe(stream));
-			}
-	     
-			//closing the pipe and Buffers.
-	        pipe("quit");
-	        inp.close();
-	        out.close();
-			
-			
+				
+
+				//To get JOSN output make sure you are using -json in command variable
+				printJson(stream);
+				//To use non json output make sure you are not using -json in command variable
+				//print(stream)
+				
+			}	     
+	        inp.close();			
+			proc.exitValue();
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
